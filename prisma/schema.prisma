@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+
+
+
+// MODELS
+
+model User {
+    userId Int @id @default(autoincrement())
+    name String
+    email String @unique
+    passwordHash String
+    pet String?
+    createdAt DateTime @default(now())
+    lastLogin DateTime?
+    role Role @default(USER)
+    sessions Session[]
+  }
+
+
+model Session {
+    sessionId Int @id @default(autoincrement())
+
+    refreshTokenHash String
+
+    userId Int
+
+    user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    lastUsedAt DateTime @default(now())
+
+    expiresAt DateTime
+
+    revokedAt DateTime?
+}
+// on the relation to User, that last "onDelete: Cascade" is very important because in a "DELETE /me" test I was getting an error because, without that line, the database refused to delete a user that still had sessions mentioning them. With 'Cascade', when the user is deleted, the database automatically deletes the related sessions too. Cascade deletion of sessions also prevents an old refresh token from being used after account deletion
+
+
+enum Role {
+    ADMIN
+    USER
+  }
+// first of all, the new 'Role' type needs to be defined *outside* of Models. This is of course because, say we're later making an 'Employee' Model - the 'Role' type we've created *wouldn't* be accessible to the new 'Employee' Model because it would be inside another Model, only accessible to *it*. We need to definite outside so it can be shared among any Model that needs it. Curiously, 'User' is now also a type; we could use it as the type for a Post's author
+// secondly, we could absolutely have 'role' be a String in both the model and the database, but then *anything* would be accepted as a 'role'. If a user entered 'banana' the database would happily store that value - that's not safe at all, the data has too much freedom to possibly be anything, and we'd have to trust the user not to enter anything dumb, or not to make a typo. We *need* to define what 'role' can legally contain since there *are* only so many it can be as per our application design (good app design emphasizes *data control*), so we create a new type where we draw the line on what roles exist and are allowed to be entered. We need to *also* do this in our Database if possible, giving the 'role' attribute in any entity that uses it the type 'ENUM' (then under "length/values" you insert 'ADMIN','USER' *with no space outside the commas*; then define the default to "as defined" and then enter USER *without* quotes). There's no reason to make a whole 'Roles' table to be referenced as Foreign Key across any entity that has a 'role' attribute since there are only so many roles, it's not like 'Country' where there are 195 countries and it *would* be more advantageous to have a whole table dedicated to that attribute.

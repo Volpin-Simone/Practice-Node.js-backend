@@ -1,0 +1,10 @@
+// minimal tsconfig.json file created for the *SOLE* purpose of shutting 'process' in 'prismaconfig.ts' the fuck up.
+
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"]
+  }
+}

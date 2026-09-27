@@ -25,17 +25,19 @@ A backend API built to learn professional Node.js/Express development patterns. 
 
 ## API Endpoints
 
-| Method | Endpoint                | Auth required   | Description               |
-|--------|-------------------------|-----------------|---------------------------|
-| POST   | /users                  | No              | Register a new user       |
-| GET    | /users/:userId          | Yes (self/admin)| Get a user by ID          |
-| PATCH  | /users/me               | Yes             | Update your own profile   |
-| PATCH  | /users/me/password      | Yes             | Change your password      |
-| DELETE | /users/me               | Yes             | Delete your own account   |
-| POST   | /auth/login             | No              | Log in, receive tokens    |
-| POST   | /auth/refresh           | Yes (refresh)   | Exchange refresh token    |
-| GET    | /health/live            | No              | Liveness check            |
-| GET    | /health/ready           | No              | Readiness check (DB)      |
+| Method | Endpoint                | Auth required          | Description               |
+|--------|-------------------------|------------------------|---------------------------|
+| POST   | /users                  | No                     | Register a new user       |
+| GET    | /users/:userId          | Admin                  | Get a user by ID          |
+| PUT    | /users/me               | Yes                    | Update your own profile   |
+| PATCH  | /users/me/password *    | Yes                    | Change your password      |
+| DELETE | /users/me               | Yes                    | Delete your own account   |
+| POST   | /auth/login *           | No                     | Log in, receive tokens    |
+| POST   | /auth/refresh *         | Refresh token (body)   | Exchange refresh token    |
+| GET    | /health/live            | No                     | Liveness check            |
+| GET    | /health/ready           | No                     | Readiness check (DB)      |
+
+\* Rate-limited to prevent brute-force / abuse
 
 ## Getting Started
 
@@ -43,7 +45,9 @@ A backend API built to learn professional Node.js/Express development patterns. 
 
 1. Install dependencies:
 
+```bash
 npm install
+```
 
 
 2. Create a `.env` file in the project root:
@@ -65,24 +69,34 @@ DATABASE_URL=
 
 3. Generate the Prisma Client (required - it's not committed to the repo):
 
+```bash
 npx prisma generate
+```
 
 
 4. Push the schema to your database (this also creates the database itself if it doesn't already exist):
 
+```bash
 npx prisma db push
+```
 
 
 5. Run the dev server:
 
+```bash
 npm run dev
+```
 
 
 6. To run the tests, first create a `.env.test` file with the same variable names, pointed at a separate database - update both `DATABASE_NAME` and `DATABASE_URL` to the new name, since they're two independent values that both need to agree. Then push the schema to it:
 
+```bash
 npm run prisma:test
+```
 
 
 7. Run the tests:
 
+```bash
 npm test
+```

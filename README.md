@@ -1,9 +1,6 @@
 # Node.js Practice Backend
 
-A backend API built to learn professional Node.js/Express development
-patterns before moving on to TypeScript. The focus is on how things
-are structured in real projects — layered architecture, authentication,
-validation, and testing — not just making the endpoints work.
+A backend API built to learn professional Node.js/Express development patterns. The focus is on how things are structured in real projects: layered architecture, authentication, centralized error handling, validation, and testing.
 
 ## Stack
 
@@ -51,6 +48,7 @@ npm install
 
 2. Create a `.env` file in the project root:
 
+```
 JWT_SECRET=
 JWT_EXPIRES_IN=
 REFRESH_TOKEN_SECRET=
@@ -62,9 +60,10 @@ DATABASE_USER=
 DATABASE_PASSWORD=
 DATABASE_NAME=
 DATABASE_URL=
+```
 
 
-3. Generate the Prisma Client (required — it's not committed to the repo):
+3. Generate the Prisma Client (required - it's not committed to the repo):
 
 npx prisma generate
 
@@ -79,7 +78,7 @@ npx prisma db push
 npm run dev
 
 
-6. To run the tests, first create a `.env.test` file with the same variable names, pointed at a separate database — update both `DATABASE_NAME` and `DATABASE_URL` to the new name, since they're two independent values that both need to agree. Then push the schema to it:
+6. To run the tests, first create a `.env.test` file with the same variable names, pointed at a separate database - update both `DATABASE_NAME` and `DATABASE_URL` to the new name, since they're two independent values that both need to agree. Then push the schema to it:
 
 npm run prisma:test
 
